@@ -2265,7 +2265,6 @@ function Footer({ company }) {
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(62,224,140,0.1)", paddingTop: 24 }}>
           <span style={{ color: COLORS.textFaint, fontSize: 13 }}>© {new Date().getFullYear()} {company.name}. All rights reserved.</span>
-          <span style={{ color: COLORS.textFaint, fontSize: 13 }}>Built with React</span>
         </div>
       </div>
     </div>
