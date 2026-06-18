@@ -845,24 +845,28 @@ function Nav({ page, setPage, company }) {
           style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
           onClick={() => setPage("home")}
         >
-          <div
-            style={{
-              width: 28,
-              height: 28,
-              background: COLORS.accent,
-              borderRadius: 3,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              ...styles.mono,
-              fontWeight: 600,
-              color: COLORS.accentText,
-              fontSize: 14,
-              boxShadow: "0 0 16px -2px rgba(62,224,140,0.7)",
-            }}
-          >
-            {company.name.charAt(0)}
-          </div>
+          {company.logo_url ? (
+            <img src={company.logo_url} alt={company.name} style={{ height: 28, borderRadius: 3, objectFit: "contain" }} />
+          ) : (
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                background: COLORS.accent,
+                borderRadius: 3,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                ...styles.mono,
+                fontWeight: 600,
+                color: COLORS.accentText,
+                fontSize: 14,
+                boxShadow: "0 0 16px -2px rgba(62,224,140,0.7)",
+              }}
+            >
+              {company.name.charAt(0)}
+            </div>
+          )}
           <span style={{ fontWeight: 600, fontSize: 15 }}>{company.name}</span>
         </div>
         <div className="nav-links" style={styles.navLinks}>
@@ -2191,6 +2195,40 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
 
       {tab === "company" && (
         <div style={{ ...styles.glassCard, maxWidth: 540 }}>
+          <div style={{ marginBottom: 18, borderBottom: `1px solid ${COLORS.border}`, paddingBottom: 18 }}>
+            <label style={styles.label}>Company Logo</label>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              {companyDraft.logo_url ? (
+                <img src={companyDraft.logo_url} alt="Logo preview" style={{ height: 48, borderRadius: 4, objectFit: "contain", background: "rgba(0,0,0,0.2)", padding: 4 }} />
+              ) : (
+                <div style={{ width: 48, height: 48, borderRadius: 4, background: "rgba(62,224,140,0.1)", border: "1px dashed rgba(62,224,140,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name="palette" size={20} />
+                </div>
+              )}
+              <div style={{ flex: 1 }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (file.size > 2 * 1024 * 1024) {
+                      alert("File too large. Max 2MB.");
+                      return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (event) => setCompanyDraft({ ...companyDraft, logo_url: event.target.result });
+                    reader.readAsDataURL(file);
+                  }}
+                  style={{ display: "block", marginBottom: 8, fontSize: 13, color: COLORS.textMuted }}
+                />
+                {companyDraft.logo_url && (
+                  <span style={{ color: "#f08080", fontSize: 12, cursor: "pointer", textDecoration: "underline" }} onClick={() => setCompanyDraft({ ...companyDraft, logo_url: "" })}>Remove logo</span>
+                )}
+              </div>
+            </div>
+          </div>
+
           {[
             ["name", "Company name"],
             ["tagline", "Tagline"],
@@ -2232,7 +2270,11 @@ function Footer({ company }) {
       <div className="shell-padding" style={{ ...styles.shell, padding: "0 24px" }}>
         <div className="grid-2-col" style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
           <div>
-            <div style={{ fontWeight: 600, fontSize: 18, color: COLORS.accent, marginBottom: 12 }}>{company.name}</div>
+            {company.logo_url ? (
+              <img src={company.logo_url} alt={company.name} style={{ height: 36, marginBottom: 16, objectFit: "contain" }} />
+            ) : (
+              <div style={{ fontWeight: 600, fontSize: 18, color: COLORS.accent, marginBottom: 12 }}>{company.name}</div>
+            )}
             <p style={{ color: COLORS.textMuted, fontSize: 14, lineHeight: 1.6, maxWidth: 300 }}>
               {company.tagline}
             </p>

@@ -66,24 +66,25 @@ db.exec(`
 try { db.exec('ALTER TABLE company ADD COLUMN facebook TEXT'); } catch {}
 try { db.exec('ALTER TABLE company ADD COLUMN instagram TEXT'); } catch {}
 try { db.exec('ALTER TABLE company ADD COLUMN linkedin TEXT'); } catch {}
+try { db.exec('ALTER TABLE company ADD COLUMN logo_url TEXT'); } catch {}
 
 // Check if company is seeded
 const companyCount = db.prepare('SELECT COUNT(*) as count FROM company').get().count;
 if (companyCount === 0) {
   // Seed Company
   const insertCompany = db.prepare(`
-    INSERT INTO company (id, name, tagline, about, email, location, whatsapp, facebook, instagram, linkedin)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO company (id, name, tagline, about, email, location, whatsapp, facebook, instagram, linkedin, logo_url)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   insertCompany.run(
-    1,
+    'c1',
     'YourCompany',
     'Software, built around how your business actually runs.',
     'We are a small team of developers and designers based in Sri Lanka, building websites, apps, and internal tools for businesses that are tired of off-the-shelf software that almost fits.',
     'hello@yourcompany.lk',
     'Colombo, Sri Lanka',
     '94770000000',
-    '', '', ''
+    '', '', '', ''
   );
 
   // Seed Reviews
@@ -221,15 +222,15 @@ app.delete('/api/reviews/:id', authenticateToken, (req, res) => {
 
 // Company API
 app.get('/api/company', (req, res) => {
-  const row = db.prepare('SELECT * FROM company WHERE id = 1').get();
+  const row = db.prepare('SELECT * FROM company WHERE id = ?').get(1);
   res.json(row ? [row] : []);
 });
 
 app.put('/api/company', authenticateToken, (req, res) => {
-  const { name, tagline, about, email, location, whatsapp, facebook, instagram, linkedin } = req.body;
-  const update = db.prepare('UPDATE company SET name = ?, tagline = ?, about = ?, email = ?, location = ?, whatsapp = ?, facebook = ?, instagram = ?, linkedin = ? WHERE id = 1');
-  update.run(name, tagline, about, email, location, whatsapp, facebook || '', instagram || '', linkedin || '');
-  const row = db.prepare('SELECT * FROM company WHERE id = 1').get();
+  const { name, tagline, about, email, location, whatsapp, facebook, instagram, linkedin, logo_url } = req.body;
+  const update = db.prepare('UPDATE company SET name = ?, tagline = ?, about = ?, email = ?, location = ?, whatsapp = ?, facebook = ?, instagram = ?, linkedin = ?, logo_url = ? WHERE id = ?');
+  update.run(name, tagline, about, email, location, whatsapp, facebook || '', instagram || '', linkedin || '', logo_url || '', 1);
+  const row = db.prepare('SELECT * FROM company WHERE id = ?').get(1);
   res.json(row ? [row] : []);
 });
 
