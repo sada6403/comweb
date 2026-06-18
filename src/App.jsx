@@ -825,7 +825,7 @@ function Nav({ page, setPage, company }) {
   const items = ["home", "services", "reviews", "about", "contact"];
   return (
     <div style={{ ...styles.nav, boxShadow: "0 1px 0 rgba(62,224,140,0.08)" }}>
-      <div style={styles.navInner}>
+      <div className="nav-inner" style={styles.navInner}>
         <div
           style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
           onClick={() => setPage("home")}
@@ -850,7 +850,7 @@ function Nav({ page, setPage, company }) {
           </div>
           <span style={{ fontWeight: 600, fontSize: 15 }}>{company.name}</span>
         </div>
-        <div style={styles.navLinks}>
+        <div className="nav-links" style={styles.navLinks}>
           {items.map((it) => (
             <span key={it} style={{ ...styles.navLink(page === it), position: "relative", paddingBottom: 4 }} onClick={() => setPage(it)}>
               {it.charAt(0).toUpperCase() + it.slice(1)}
@@ -1138,7 +1138,7 @@ function Home({ setPage, company, services, reviews = [] }) {
           <Reveal>
             <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto" }}>
               <div style={styles.sectionLabel}>// service & software studio</div>
-              <h1 style={{ fontSize: 44, lineHeight: 1.15, fontWeight: 600, margin: "0 0 20px" }}>
+              <h1 className="hero-title" style={{ fontSize: 44, lineHeight: 1.15, fontWeight: 600, margin: "0 0 20px" }}>
                 {company.tagline}
               </h1>
               <p style={{ color: COLORS.textMuted, fontSize: 16, lineHeight: 1.7, marginBottom: 32 }}>
@@ -1192,9 +1192,10 @@ function Home({ setPage, company, services, reviews = [] }) {
         </Reveal>
       </div>
 
-      <div style={{ ...styles.shell, padding: "40px 24px 0", position: "relative" }}>
+      <div className="shell-padding" style={{ ...styles.shell, padding: "40px 24px 0", position: "relative" }}>
         <Reveal>
           <div
+            className="stats-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
@@ -1227,7 +1228,7 @@ function Home({ setPage, company, services, reviews = [] }) {
       </div>
 
       <div style={{ borderTop: `1px solid ${COLORS.border}`, borderBottom: `1px solid ${COLORS.border}`, position: "relative", marginTop: 48 }}>
-        <div style={{ ...styles.shell, padding: "56px 24px" }}>
+        <div className="shell-padding" style={{ ...styles.shell, padding: "56px 24px" }}>
           <Reveal>
             <div style={styles.sectionLabel}>what we build</div>
           </Reveal>
@@ -1242,7 +1243,7 @@ function Home({ setPage, company, services, reviews = [] }) {
       </div>
 
       {reviews.length > 0 && (
-        <div style={{ ...styles.shell, padding: "56px 24px 0", position: "relative" }}>
+        <div className="shell-padding" style={{ ...styles.shell, padding: "56px 24px 0", position: "relative" }}>
           <Reveal>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20, flexWrap: "wrap", gap: 8 }}>
               <div style={styles.sectionLabel}>client reviews</div>
@@ -1264,7 +1265,7 @@ function Home({ setPage, company, services, reviews = [] }) {
         </div>
       )}
 
-      <div style={{ ...styles.shell, padding: "64px 24px", textAlign: "center" }}>
+      <div className="shell-padding" style={{ ...styles.shell, padding: "64px 24px", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontSize: 24, fontWeight: 600, marginBottom: 12 }}>Have a project in mind?</h2>
           <p style={{ color: COLORS.textMuted, marginBottom: 24 }}>
@@ -1624,9 +1625,9 @@ function Contact({ company, services }) {
   };
 
   return (
-    <div style={{ ...styles.shell, padding: "64px 24px 96px", position: "relative" }}>
+    <div className="shell-padding" style={{ ...styles.shell, padding: "64px 24px 96px", position: "relative" }}>
       <GlowOrb top={20} left={-40} color="rgba(62,224,140,0.25)" size={320} />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, position: "relative", zIndex: 1 }}>
+      <div className="grid-2-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, position: "relative", zIndex: 1 }}>
         <Reveal>
           <div>
             <div style={styles.sectionLabel}>contact</div>
@@ -1857,7 +1858,7 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 24, borderBottom: `1px solid ${COLORS.border}` }}>
+      <div className="flex-wrap-mobile" style={{ display: "flex", gap: 8, marginBottom: 24, borderBottom: `1px solid ${COLORS.border}` }}>
         {["services", "reviews", "company"].map((t) => (
           <div
             key={t}
@@ -1894,7 +1895,7 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
               <div style={{ fontWeight: 500, marginBottom: 16 }}>
                 {services.find((s) => s.id === draft.id) ? "Edit service" : "New service"}
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+              <div className="grid-2-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
                 <div>
                   <label style={styles.label}>Title</label>
                   <input style={styles.input} value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
@@ -1969,7 +1970,7 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
               <div style={{ fontWeight: 500, marginBottom: 16 }}>
                 {reviews.find((r) => r.id === reviewDraft.id) ? "Edit review" : "New review"}
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+              <div className="grid-2-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
                 <div>
                   <label style={styles.label}>Customer name</label>
                   <input style={styles.input} value={reviewDraft.name} onChange={(e) => setReviewDraft({ ...reviewDraft, name: e.target.value })} />
@@ -1979,7 +1980,7 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
                   <input style={styles.input} value={reviewDraft.role} onChange={(e) => setReviewDraft({ ...reviewDraft, role: e.target.value })} placeholder="Owner, ABC Traders" />
                 </div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+              <div className="grid-2-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
                 <div>
                   <label style={styles.label}>Service</label>
                   <input style={styles.input} value={reviewDraft.service} onChange={(e) => setReviewDraft({ ...reviewDraft, service: e.target.value })} placeholder="Web development" />

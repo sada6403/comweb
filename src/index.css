@@ -1,1 +1,52 @@
 body { margin: 0; padding: 0; }
+
+/* Responsive utility classes for mobile layout */
+@media (max-width: 768px) {
+  /* Reduce nav padding and allow wrap */
+  .nav-inner {
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    justify-content: center !important;
+  }
+  .nav-links {
+    gap: 14px !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+  
+  /* Hero typography scaling */
+  .hero-title {
+    font-size: 32px !important;
+  }
+  
+  /* Grids that need to stack on mobile */
+  .grid-2-col {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Stats grid stack */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  
+  /* Layout constraints */
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  .shell-padding {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  
+  /* Three.js device scale */
+  .device-scene-container canvas {
+    transform: scale(0.8);
+    transform-origin: top center;
+  }
+
+  .flex-wrap-mobile {
+    flex-wrap: wrap !important;
+  }
+}
