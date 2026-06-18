@@ -63,6 +63,14 @@ if (companyCount === 0) {
     'Colombo, Sri Lanka',
     '94770000000'
   );
+
+  const insertService = db.prepare('INSERT INTO services (id, title, summary, price_label, icon) VALUES (?, ?, ?, ?, ?)');
+  insertService.run('s1', 'Web development', 'Business websites and web apps built with React, PHP, or Laravel.', 'From LKR 25,000', 'code');
+  insertService.run('s2', 'UI / UX design', 'Modern interfaces focused on clean typography and easy navigation.', 'From LKR 12,000', 'layout');
+  insertService.run('s3', 'Internal tools', 'Custom dashboards and databases to replace messy spreadsheets.', 'Custom pricing', 'database');
+
+  const insertReview = db.prepare('INSERT INTO reviews (id, name, role, service, rating, text) VALUES (?, ?, ?, ?, ?, ?)');
+  insertReview.run('r1', 'Kasun Perera', 'Owner, ABC Traders', 'Web development', 5, 'They delivered exactly what we needed. Communication was clear from day one.');
 }
 
 // Authentication Middleware
@@ -108,9 +116,16 @@ app.post('/api/services', authenticateToken, (req, res) => {
 app.put('/api/services/:id', authenticateToken, (req, res) => {
   const { title, summary, price_label, icon } = req.body;
   const update = db.prepare('UPDATE services SET title = ?, summary = ?, price_label = ?, icon = ? WHERE id = ?');
-  update.run(title, summary, price_label, icon, req.params.id);
+  const info = update.run(title, summary, price_label, icon, req.params.id);
+  
+  if (info.changes === 0) {
+    // If updating a demo service that isn't in DB yet, insert it
+    const insert = db.prepare('INSERT INTO services (id, title, summary, price_label, icon) VALUES (?, ?, ?, ?, ?)');
+    insert.run(req.params.id, title, summary, price_label, icon);
+  }
+  
   const row = db.prepare('SELECT * FROM services WHERE id = ?').get(req.params.id);
-  res.json(row);
+  res.json(row || {});
 });
 
 app.delete('/api/services/:id', authenticateToken, (req, res) => {
@@ -137,9 +152,15 @@ app.post('/api/reviews', authenticateToken, (req, res) => {
 app.put('/api/reviews/:id', authenticateToken, (req, res) => {
   const { name, role, service, rating, text } = req.body;
   const update = db.prepare('UPDATE reviews SET name = ?, role = ?, service = ?, rating = ?, text = ? WHERE id = ?');
-  update.run(name, role, service, rating, text, req.params.id);
+  const info = update.run(name, role, service, rating, text, req.params.id);
+  
+  if (info.changes === 0) {
+    const insert = db.prepare('INSERT INTO reviews (id, name, role, service, rating, text) VALUES (?, ?, ?, ?, ?, ?)');
+    insert.run(req.params.id, name, role, service, rating, text);
+  }
+
   const row = db.prepare('SELECT * FROM reviews WHERE id = ?').get(req.params.id);
-  res.json(row);
+  res.json(row || {});
 });
 
 app.delete('/api/reviews/:id', authenticateToken, (req, res) => {
