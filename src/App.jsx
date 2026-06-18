@@ -1788,8 +1788,9 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
         const row = await api(`services/${draft.id}`, { method: "PUT", body: draft, token: admin.token });
         updated = services.map((s) => (s.id === draft.id ? row : s));
       }
-    } catch {
-      updated = isNew ? [...services, draft] : services.map((s) => (s.id === draft.id ? draft : s));
+    } catch (err) {
+      alert("Error saving: " + err.message);
+      return;
     }
     setServices(updated);
     setDraft(null);
@@ -1814,8 +1815,9 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
         const row = await api(`reviews/${reviewDraft.id}`, { method: "PUT", body: reviewDraft, token: admin.token });
         updated = reviews.map((r) => (r.id === reviewDraft.id ? row : r));
       }
-    } catch {
-      updated = isNew ? [...reviews, reviewDraft] : reviews.map((r) => (r.id === reviewDraft.id ? reviewDraft : r));
+    } catch (err) {
+      alert("Error saving: " + err.message);
+      return;
     }
     setReviews(updated);
     setReviewDraft(null);
@@ -1832,9 +1834,11 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
   const saveCompany = async () => {
     try {
       await api("company", { method: "PUT", body: companyDraft, token: admin.token });
-    } catch {}
-    setCompany(companyDraft);
-    flashSaved();
+      setCompany(companyDraft);
+      flashSaved();
+    } catch (err) {
+      alert("Error saving: " + err.message);
+    }
   };
 
   return (
