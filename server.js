@@ -170,6 +170,17 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const startServer = (port) => {
+  const server = app.listen(port, () => {
+    console.log(`Server is successfully running on port ${port}`);
+  }).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.log(`Port ${port} is already in use. Trying port ${Number(port) + 1}...`);
+      startServer(Number(port) + 1);
+    } else {
+      console.error(err);
+    }
+  });
+};
+
+startServer(PORT);
