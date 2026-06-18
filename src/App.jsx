@@ -1120,18 +1120,8 @@ function Counter({ to, suffix = "", duration = 1200 }) {
   );
 }
 
-/* =============================== IMAGE HELPER =============================== */
-function getServiceImage(icon) {
-  if (icon === 'code') return '/images/web.png';
-  if (icon === 'device-mobile') return '/images/mobile.png';
-  if (icon === 'database') return '/images/marketing.png';
-  if (icon === 'layout' || icon === 'palette') return '/images/design.png';
-  return '/images/web.png';
-}
-
 function ServiceTeaserCard({ s }) {
   const tilt = useTilt(10);
-  const img = getServiceImage(s.icon);
   return (
     <div
       ref={tilt.ref}
@@ -1139,26 +1129,18 @@ function ServiceTeaserCard({ s }) {
       onMouseLeave={tilt.onMouseLeave}
       style={{
         ...styles.glassCard,
-        padding: 0,
-        overflow: "hidden",
+        padding: 20,
         transform: tilt.transform,
         cursor: "default",
-        display: "flex",
-        flexDirection: "column"
       }}
       onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(62,224,140,0.45)")}
       onMouseOut={(e) => (e.currentTarget.style.borderColor = "rgba(62,224,140,0.16)")}
     >
-      <div style={{ width: "100%", height: 140, background: "#0a0e0c", position: "relative" }}>
-        <img src={img} alt={s.title} style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.8 }} />
-        <div style={{ position: "absolute", bottom: 12, left: 16, color: COLORS.accent, filter: "drop-shadow(0 0 6px rgba(62,224,140,0.8))" }}>
-          <Icon name={s.icon} size={28} />
-        </div>
+      <div style={{ color: COLORS.accent, marginBottom: 14, filter: "drop-shadow(0 0 6px rgba(62,224,140,0.5))" }}>
+        <Icon name={s.icon} size={24} />
       </div>
-      <div style={{ padding: 20, flex: 1, display: "flex", flexDirection: "column" }}>
-        <div style={{ fontWeight: 500, fontSize: 16, marginBottom: 8 }}>{s.title}</div>
-        <div style={{ color: COLORS.textMuted, fontSize: 13.5, lineHeight: 1.6 }}>{s.summary}</div>
-      </div>
+      <div style={{ fontWeight: 500, fontSize: 15, marginBottom: 6 }}>{s.title}</div>
+      <div style={{ color: COLORS.textMuted, fontSize: 13.5, lineHeight: 1.6 }}>{s.summary}</div>
     </div>
   );
 }
@@ -1212,10 +1194,18 @@ function Home({ setPage, company, services, reviews = [], stats = [] }) {
         </div>
 
         <Reveal delay={0.15}>
-          <div style={{ position: "relative", zIndex: 1, padding: "0 24px", maxWidth: 900, margin: "40px auto 0" }}>
-            <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(62,224,140,0.2)", boxShadow: "0 24px 64px -12px rgba(62,224,140,0.15)" }}>
-              <img src="/images/hero.png" alt="Hero visualization" style={{ width: "100%", height: "auto", display: "block" }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(6,21,12,0.8) 0%, rgba(6,21,12,0) 40%)", pointerEvents: "none" }} />
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <DeviceScene />
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: -8,
+                fontSize: 12.5,
+                color: COLORS.textFaint,
+                ...styles.mono,
+              }}
+            >
+              <Icon name="arrow" size={11} /> drag to rotate
             </div>
           </div>
         </Reveal>
@@ -1344,71 +1334,60 @@ function ServiceCard({ s, company }) {
           onMouseLeave={tilt.onMouseLeave}
           style={{
             ...styles.glassCard,
-            padding: 0,
-            overflow: "hidden",
             transform: `${tilt.transform} ${flipped ? "" : ""}`,
             backfaceVisibility: "hidden",
             position: flipped ? "absolute" : "relative",
             inset: 0,
             cursor: "pointer",
-            display: "flex",
-            flexDirection: "column"
           }}
           onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(62,224,140,0.45)")}
           onMouseOut={(e) => (e.currentTarget.style.borderColor = "rgba(62,224,140,0.16)")}
         >
-          <div style={{ width: "100%", height: 160, background: "#0a0e0c", position: "relative" }}>
-            <img src={getServiceImage(s.icon)} alt={s.title} style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.8 }} />
-            <div style={{ position: "absolute", bottom: 12, left: 16, display: "flex", width: "calc(100% - 32px)", justifyContent: "space-between", alignItems: "flex-end" }}>
-              <div style={{ color: COLORS.accent, filter: "drop-shadow(0 0 6px rgba(62,224,140,0.8))" }}>
-                <Icon name={s.icon} size={28} />
-              </div>
-              {s.price_label && (
-                <span
-                  style={{
-                    ...styles.mono,
-                    fontSize: 12,
-                    color: COLORS.accent,
-                    border: "1px solid rgba(62,224,140,0.4)",
-                    borderRadius: 4,
-                    padding: "4px 10px",
-                    background: "rgba(10,14,12,0.8)",
-                    backdropFilter: "blur(4px)",
-                  }}
-                >
-                  {s.price_label}
-                </span>
-              )}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+            <div style={{ color: COLORS.accent, filter: "drop-shadow(0 0 6px rgba(62,224,140,0.5))" }}>
+              <Icon name={s.icon} size={26} />
             </div>
+            {s.price_label && (
+              <span
+                style={{
+                  ...styles.mono,
+                  fontSize: 12,
+                  color: COLORS.accent,
+                  border: "1px solid rgba(62,224,140,0.3)",
+                  borderRadius: 3,
+                  padding: "3px 8px",
+                  background: "rgba(62,224,140,0.06)",
+                }}
+              >
+                {s.price_label}
+              </span>
+            )}
           </div>
-          
-          <div style={{ padding: 20, flex: 1, display: "flex", flexDirection: "column" }}>
-            <div style={{ fontWeight: 600, fontSize: 18, marginBottom: 8 }}>{s.title}</div>
-            <div style={{ color: COLORS.textMuted, fontSize: 14, lineHeight: 1.65, marginBottom: 20, flex: 1 }}>{s.summary}</div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button
-                style={{ ...styles.btnGhost, flex: 1, justifyContent: "center", fontSize: 13 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setFlipped(true);
-                }}
-              >
-                What's included
-              </button>
-              <button
-                style={{ ...styles.btnGhost, width: 44, justifyContent: "center", padding: 0, position: "relative" }}
-                onClick={(e) => {
-                  ripple.trigger(e);
-                  openWhatsApp(
-                    company.whatsapp,
-                    `Hi ${company.name}, I'm interested in your "${s.title}" service. Could you share more details and a quote?`
-                  );
-                }}
-              >
-                <ripple.RippleLayer />
-                <Icon name="whatsapp" size={15} />
-              </button>
-            </div>
+          <div style={{ fontWeight: 500, fontSize: 17, marginBottom: 8 }}>{s.title}</div>
+          <div style={{ color: COLORS.textMuted, fontSize: 14, lineHeight: 1.65, marginBottom: 20 }}>{s.summary}</div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              style={{ ...styles.btnGhost, flex: 1, justifyContent: "center", fontSize: 13 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setFlipped(true);
+              }}
+            >
+              What's included
+            </button>
+            <button
+              style={{ ...styles.btnGhost, width: 44, justifyContent: "center", padding: 0, position: "relative" }}
+              onClick={(e) => {
+                ripple.trigger(e);
+                openWhatsApp(
+                  company.whatsapp,
+                  `Hi ${company.name}, I'm interested in your "${s.title}" service. Could you share more details and a quote?`
+                );
+              }}
+            >
+              <ripple.RippleLayer />
+              <Icon name="whatsapp" size={15} />
+            </button>
           </div>
         </div>
 
