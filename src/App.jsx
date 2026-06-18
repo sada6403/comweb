@@ -2364,6 +2364,15 @@ export default function App() {
       <GlobalFonts />
       <CustomCursor />
       <ScrollProgress />
+      
+      {/* Animated Background Layers */}
+      <div className="animated-grid-bg" />
+      <div className="aurora-container">
+        <div className="aurora-blob blob-1" />
+        <div className="aurora-blob blob-2" />
+        <div className="aurora-blob blob-3" />
+      </div>
+
       <div style={{ position: "relative", zIndex: 1 }}>
         <Nav page={page} setPage={setPage} company={company} />
 

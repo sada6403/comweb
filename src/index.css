@@ -1,5 +1,57 @@
-body { margin: 0; padding: 0; }
+body { 
+  margin: 0; 
+  padding: 0;
+  background-color: #06150c;
+  color: #e5ebe8;
+}
 
+/* Animated Grid Background */
+.animated-grid-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    linear-gradient(rgba(62, 224, 140, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(62, 224, 140, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+  animation: gridPan 30s linear infinite;
+}
+
+@keyframes gridPan {
+  0% { background-position: 0px 0px; }
+  100% { background-position: 40px 40px; }
+}
+
+/* Ambient Aurora Blobs */
+.aurora-container {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.aurora-blob {
+  position: absolute;
+  filter: blur(80px);
+  border-radius: 50%;
+  animation: floatBlob 20s ease-in-out infinite alternate;
+}
+
+.blob-1 { width: 600px; height: 600px; background: rgba(30, 150, 90, 0.15); top: -200px; left: -100px; animation-delay: 0s; }
+.blob-2 { width: 500px; height: 500px; background: rgba(62, 224, 140, 0.1); bottom: -100px; right: -50px; animation-delay: -5s; }
+.blob-3 { width: 700px; height: 700px; background: rgba(10, 80, 50, 0.15); top: 30%; left: 40%; animation-delay: -10s; }
+
+@keyframes floatBlob {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
 /* Responsive utility classes for mobile layout */
 @media (max-width: 768px) {
   /* Reduce nav padding and allow wrap */
