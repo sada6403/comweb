@@ -97,7 +97,22 @@ const DEMO_COMPANY = {
   email: "hello@yourcompany.lk",
   location: "Colombo, Sri Lanka",
   whatsapp: WHATSAPP_NUMBER,
+  facebook: "",
+  instagram: "",
+  linkedin: ""
 };
+
+const DEMO_STATS = [
+  { id: "st1", number: 40, suffix: "+", label: "Projects delivered" },
+  { id: "st2", number: 98, suffix: "%", label: "Client satisfaction" },
+  { id: "st3", number: 24, suffix: "h", label: "Avg. response time" },
+];
+
+const DEMO_FEATURES = [
+  { id: "f1", text: "Direct communication — talk to the people actually building your project." },
+  { id: "f2", text: "Fixed-scope quotes before any work starts, no surprise costs." },
+  { id: "f3", text: "Built with modern, maintainable tech: React, PHP/Laravel, and Node.js." },
+];
 
 const DEMO_REVIEWS = [
   {
@@ -1126,7 +1141,7 @@ function ServiceTeaserCard({ s }) {
   );
 }
 
-function Home({ setPage, company, services, reviews = [] }) {
+function Home({ setPage, company, services, reviews = [], stats = [] }) {
   const ctaRipple = useRipple();
   const ghostRipple = useRipple();
   return (
@@ -1203,12 +1218,8 @@ function Home({ setPage, company, services, reviews = [] }) {
               textAlign: "center",
             }}
           >
-            {[
-              { to: 40, suffix: "+", label: "Projects delivered" },
-              { to: 98, suffix: "%", label: "Client satisfaction" },
-              { to: 24, suffix: "h", label: "Avg. response time" },
-            ].map((stat, i) => (
-              <div key={i}>
+            {stats.map((stat) => (
+              <div key={stat.id}>
                 <div
                   style={{
                     fontSize: 32,
@@ -1218,7 +1229,7 @@ function Home({ setPage, company, services, reviews = [] }) {
                     textShadow: "0 0 16px rgba(62,224,140,0.35)",
                   }}
                 >
-                  <Counter to={stat.to} suffix={stat.suffix} />
+                  <Counter to={stat.number} suffix={stat.suffix} />
                 </div>
                 <div style={{ color: COLORS.textMuted, fontSize: 13, marginTop: 4 }}>{stat.label}</div>
               </div>
@@ -1574,12 +1585,7 @@ function Services({ services, company }) {
 }
 
 /* =============================== ABOUT =============================== */
-function About({ company }) {
-  const points = [
-    "Direct communication — talk to the people actually building your project.",
-    "Fixed-scope quotes before any work starts, no surprise costs.",
-    "Built with modern, maintainable tech: React, PHP/Laravel, Supabase.",
-  ];
+function About({ company, features = [] }) {
   return (
     <div style={{ ...styles.shell, padding: "64px 24px 96px", position: "relative" }}>
       <GlowOrb top={-40} left="60%" color="rgba(62,224,140,0.25)" size={300} />
@@ -1591,12 +1597,12 @@ function About({ company }) {
             {company.about}
           </p>
           <div style={{ display: "grid", gap: 12, maxWidth: 560 }}>
-            {points.map((p, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+            {features.map((f) => (
+              <div key={f.id} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                 <span style={{ color: COLORS.accent, marginTop: 2, filter: "drop-shadow(0 0 5px rgba(62,224,140,0.5))" }}>
                   <Icon name="check" size={16} />
                 </span>
-                <span style={{ color: COLORS.text, fontSize: 14.5, lineHeight: 1.6 }}>{p}</span>
+                <span style={{ color: COLORS.text, fontSize: 14.5, lineHeight: 1.6 }}>{f.text}</span>
               </div>
             ))}
           </div>
@@ -1766,10 +1772,12 @@ function AdminLogin({ onLogin }) {
   );
 }
 
-function AdminPanel({ admin, onLogout, services, setServices, company, setCompany, reviews, setReviews }) {
+function AdminPanel({ admin, onLogout, services, setServices, company, setCompany, reviews, setReviews, stats, setStats, features, setFeatures }) {
   const [tab, setTab] = useState("services");
   const [draft, setDraft] = useState(null);
   const [reviewDraft, setReviewDraft] = useState(null);
+  const [statDraft, setStatDraft] = useState(null);
+  const [featureDraft, setFeatureDraft] = useState(null);
   const [companyDraft, setCompanyDraft] = useState(company);
   const [savedMsg, setSavedMsg] = useState("");
 
@@ -1842,6 +1850,56 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
     }
   };
 
+  const saveStat = async () => {
+    const isNew = !stats.find((s) => s.id === statDraft.id);
+    let updated;
+    try {
+      if (isNew) {
+        const row = await api("stats", { method: "POST", body: { ...statDraft, id: undefined }, token: admin.token });
+        updated = [...stats, row];
+      } else {
+        const row = await api(`stats/${statDraft.id}`, { method: "PUT", body: statDraft, token: admin.token });
+        updated = stats.map((s) => (s.id === statDraft.id ? row : s));
+      }
+    } catch (err) {
+      alert("Error saving: " + err.message);
+      return;
+    }
+    setStats(updated);
+    setStatDraft(null);
+    flashSaved();
+  };
+
+  const deleteStat = async (id) => {
+    try { await api(`stats/${id}`, { method: "DELETE", token: admin.token }); } catch {}
+    setStats(stats.filter((s) => s.id !== id));
+  };
+
+  const saveFeature = async () => {
+    const isNew = !features.find((f) => f.id === featureDraft.id);
+    let updated;
+    try {
+      if (isNew) {
+        const row = await api("features", { method: "POST", body: { ...featureDraft, id: undefined }, token: admin.token });
+        updated = [...features, row];
+      } else {
+        const row = await api(`features/${featureDraft.id}`, { method: "PUT", body: featureDraft, token: admin.token });
+        updated = features.map((f) => (f.id === featureDraft.id ? row : f));
+      }
+    } catch (err) {
+      alert("Error saving: " + err.message);
+      return;
+    }
+    setFeatures(updated);
+    setFeatureDraft(null);
+    flashSaved();
+  };
+
+  const deleteFeature = async (id) => {
+    try { await api(`features/${id}`, { method: "DELETE", token: admin.token }); } catch {}
+    setFeatures(features.filter((f) => f.id !== id));
+  };
+
   return (
     <div style={{ ...styles.shell, padding: "40px 24px 96px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
@@ -1859,7 +1917,7 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
       </div>
 
       <div className="flex-wrap-mobile" style={{ display: "flex", gap: 8, marginBottom: 24, borderBottom: `1px solid ${COLORS.border}` }}>
-        {["services", "reviews", "company"].map((t) => (
+        {["services", "reviews", "stats", "features", "company"].map((t) => (
           <div
             key={t}
             onClick={() => setTab(t)}
@@ -1870,9 +1928,10 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
               fontSize: 14,
               color: tab === t ? COLORS.text : COLORS.textMuted,
               borderBottom: tab === t ? `2px solid ${COLORS.accent}` : "2px solid transparent",
+              textTransform: "capitalize"
             }}
           >
-            {t === "services" ? "Services" : t === "reviews" ? "Reviews" : "Company info"}
+            {t === "company" ? "Company info" : t}
           </div>
         ))}
       </div>
@@ -2042,6 +2101,94 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
         </div>
       )}
 
+      {tab === "stats" && (
+        <div>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+            <button style={styles.btnPrimary} onClick={() => setStatDraft({ id: `st${Date.now()}`, number: 0, suffix: "", label: "" })}>
+              <Icon name="plus" size={15} /> Add stat
+            </button>
+          </div>
+
+          {statDraft && (
+            <div style={{ ...styles.glassCard, marginBottom: 20 }}>
+              <div style={{ fontWeight: 500, marginBottom: 16 }}>{stats.find((s) => s.id === statDraft.id) ? "Edit stat" : "New stat"}</div>
+              <div className="grid-2-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+                <div>
+                  <label style={styles.label}>Number</label>
+                  <input type="number" style={styles.input} value={statDraft.number} onChange={(e) => setStatDraft({ ...statDraft, number: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label style={styles.label}>Suffix (e.g. +, %, M)</label>
+                  <input style={styles.input} value={statDraft.suffix} onChange={(e) => setStatDraft({ ...statDraft, suffix: e.target.value })} />
+                </div>
+              </div>
+              <div style={{ marginBottom: 18 }}>
+                <label style={styles.label}>Label (e.g. Projects delivered)</label>
+                <input style={styles.input} value={statDraft.label} onChange={(e) => setStatDraft({ ...statDraft, label: e.target.value })} />
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button style={styles.btnPrimary} onClick={saveStat}>Save</button>
+                <button style={styles.btnGhost} onClick={() => setStatDraft(null)}>Cancel</button>
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: "grid", gap: 10 }}>
+            {stats.map((s) => (
+              <div key={s.id} style={{ ...styles.glassCard, display: "flex", alignItems: "center", justifyContent: "space-between", padding: 16 }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 16, color: COLORS.accent }}>{s.number}{s.suffix}</div>
+                  <div style={{ color: COLORS.textFaint, fontSize: 13 }}>{s.label}</div>
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button style={styles.btnGhost} onClick={() => setStatDraft(s)}><Icon name="layout" size={14} /></button>
+                  <button style={{ ...styles.btnGhost, color: "#f08080" }} onClick={() => deleteStat(s.id)}><Icon name="trash" size={14} /></button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === "features" && (
+        <div>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+            <button style={styles.btnPrimary} onClick={() => setFeatureDraft({ id: `f${Date.now()}`, text: "" })}>
+              <Icon name="plus" size={15} /> Add about point
+            </button>
+          </div>
+
+          {featureDraft && (
+            <div style={{ ...styles.glassCard, marginBottom: 20 }}>
+              <div style={{ fontWeight: 500, marginBottom: 16 }}>{features.find((f) => f.id === featureDraft.id) ? "Edit point" : "New point"}</div>
+              <div style={{ marginBottom: 18 }}>
+                <label style={styles.label}>Feature point text</label>
+                <input style={styles.input} value={featureDraft.text} onChange={(e) => setFeatureDraft({ ...featureDraft, text: e.target.value })} />
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button style={styles.btnPrimary} onClick={saveFeature}>Save</button>
+                <button style={styles.btnGhost} onClick={() => setFeatureDraft(null)}>Cancel</button>
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: "grid", gap: 10 }}>
+            {features.map((f) => (
+              <div key={f.id} style={{ ...styles.glassCard, display: "flex", alignItems: "center", justifyContent: "space-between", padding: 16 }}>
+                <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                  <span style={{ color: COLORS.accent, marginTop: 2 }}><Icon name="check" size={14} /></span>
+                  <div style={{ fontSize: 14 }}>{f.text}</div>
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button style={styles.btnGhost} onClick={() => setFeatureDraft(f)}><Icon name="layout" size={14} /></button>
+                  <button style={{ ...styles.btnGhost, color: "#f08080" }} onClick={() => deleteFeature(f.id)}><Icon name="trash" size={14} /></button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {tab === "company" && (
         <div style={{ ...styles.glassCard, maxWidth: 540 }}>
           {[
@@ -2050,12 +2197,15 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
             ["email", "Email"],
             ["location", "Location"],
             ["whatsapp", "WhatsApp number (no + or spaces)"],
+            ["facebook", "Facebook Link"],
+            ["instagram", "Instagram Link"],
+            ["linkedin", "LinkedIn Link"],
           ].map(([key, label]) => (
             <div key={key} style={{ marginBottom: 14 }}>
               <label style={styles.label}>{label}</label>
               <input
                 style={styles.input}
-                value={companyDraft[key]}
+                value={companyDraft[key] || ""}
                 onChange={(e) => setCompanyDraft({ ...companyDraft, [key]: e.target.value })}
               />
             </div>
@@ -2078,9 +2228,45 @@ function AdminPanel({ admin, onLogout, services, setServices, company, setCompan
 /* =============================== FOOTER =============================== */
 function Footer({ company }) {
   return (
-    <div style={{ borderTop: "1px solid rgba(62,224,140,0.1)", padding: "32px 24px" }}>
-      <div style={{ ...styles.shell, padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <span style={{ color: COLORS.textFaint, fontSize: 13 }}>© {new Date().getFullYear()} {company.name}</span>
+    <div style={{ borderTop: "1px solid rgba(62,224,140,0.1)", paddingTop: 48, paddingBottom: 32, background: "rgba(10, 15, 12, 0.4)" }}>
+      <div className="shell-padding" style={{ ...styles.shell, padding: "0 24px" }}>
+        <div className="grid-2-col" style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
+          <div>
+            <div style={{ fontWeight: 600, fontSize: 18, color: COLORS.accent, marginBottom: 12 }}>{company.name}</div>
+            <p style={{ color: COLORS.textMuted, fontSize: 14, lineHeight: 1.6, maxWidth: 300 }}>
+              {company.tagline}
+            </p>
+          </div>
+          <div>
+            <div style={{ fontWeight: 500, fontSize: 14, marginBottom: 16 }}>Contact</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13, color: COLORS.textMuted }}>
+              <span>{company.email}</span>
+              <span>+{company.whatsapp}</span>
+              <span>{company.location}</span>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontWeight: 500, fontSize: 14, marginBottom: 16 }}>Social</div>
+            <div style={{ display: "flex", gap: 12 }}>
+              {company.facebook && (
+                <a href={company.facebook} target="_blank" rel="noreferrer" style={{ color: COLORS.textMuted, textDecoration: "none" }}>Facebook</a>
+              )}
+              {company.instagram && (
+                <a href={company.instagram} target="_blank" rel="noreferrer" style={{ color: COLORS.textMuted, textDecoration: "none" }}>Instagram</a>
+              )}
+              {company.linkedin && (
+                <a href={company.linkedin} target="_blank" rel="noreferrer" style={{ color: COLORS.textMuted, textDecoration: "none" }}>LinkedIn</a>
+              )}
+              {(!company.facebook && !company.instagram && !company.linkedin) && (
+                <span style={{ color: COLORS.textFaint, fontSize: 13 }}>No socials linked</span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(62,224,140,0.1)", paddingTop: 24 }}>
+          <span style={{ color: COLORS.textFaint, fontSize: 13 }}>© {new Date().getFullYear()} {company.name}. All rights reserved.</span>
+          <span style={{ color: COLORS.textFaint, fontSize: 13 }}>Built with React</span>
+        </div>
       </div>
     </div>
   );
@@ -2103,19 +2289,25 @@ export default function App() {
   const [services, setServices] = useState(DEMO_SERVICES);
   const [company, setCompany] = useState(DEMO_COMPANY);
   const [reviews, setReviews] = useState(DEMO_REVIEWS);
+  const [stats, setStats] = useState(DEMO_STATS);
+  const [features, setFeatures] = useState(DEMO_FEATURES);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        const [svc, comp, rev] = await Promise.all([
-          api("services"),
-          api("company"),
+        const [svc, comp, rev, stts, ftrs] = await Promise.all([
+          api("services").catch(() => null),
+          api("company").catch(() => null),
           api("reviews").catch(() => null),
+          api("stats").catch(() => null),
+          api("features").catch(() => null),
         ]);
         if (svc?.length) setServices(svc);
         if (comp?.length) setCompany(comp[0]);
         if (rev?.length) setReviews(rev);
+        if (stts?.length) setStats(stts);
+        if (ftrs?.length) setFeatures(ftrs);
       } catch {
         /* fall back to demo data silently */
       } finally {
@@ -2135,10 +2327,10 @@ export default function App() {
         <Nav page={page} setPage={setPage} company={company} />
 
         <PageTransition pageKey={page}>
-          {page === "home" && <Home setPage={setPage} company={company} services={services} reviews={reviews} />}
+          {page === "home" && <Home setPage={setPage} company={company} services={services} reviews={reviews} stats={stats} />}
           {page === "services" && <Services services={services} company={company} />}
           {page === "reviews" && <Reviews reviews={reviews} company={company} />}
-          {page === "about" && <About company={company} />}
+          {page === "about" && <About company={company} features={features} />}
           {page === "contact" && <Contact company={company} services={services} />}
           {page === "admin" &&
             (admin ? (
@@ -2151,6 +2343,10 @@ export default function App() {
                 setCompany={setCompany}
                 reviews={reviews}
                 setReviews={setReviews}
+                stats={stats}
+                setStats={setStats}
+                features={features}
+                setFeatures={setFeatures}
               />
             ) : (
               <AdminLogin onLogin={setAdmin} />
