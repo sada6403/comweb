@@ -86,7 +86,14 @@ if (companyCount === 0) {
     '', '', ''
   );
 
-  // Seed Services comprehensively
+  // Seed Reviews
+  const insertReview = db.prepare('INSERT INTO reviews (id, name, role, service, rating, text) VALUES (?, ?, ?, ?, ?, ?)');
+  insertReview.run('r1', 'Kasun Perera', 'Owner, ABC Traders', 'Web development', 5, 'They delivered exactly what we needed. Communication was clear from day one.');
+}
+
+// Seed Services comprehensively if user only has 1 or 0 services
+const servicesCount = db.prepare('SELECT COUNT(*) as count FROM services').get().count;
+if (servicesCount <= 1) {
   db.exec('DELETE FROM services');
   const insertService = db.prepare('INSERT INTO services (id, title, summary, price_label, icon) VALUES (?, ?, ?, ?, ?)');
   insertService.run('s1', 'Web Development', 'Business websites and web apps built with React, PHP, or Laravel.', 'From LKR 25,000', 'code');
@@ -96,10 +103,6 @@ if (companyCount === 0) {
   insertService.run('s5', 'Custom Software & ERP', 'Internal tools, dashboards, and databases to replace messy spreadsheets.', 'Custom pricing', 'code');
   insertService.run('s6', 'IT Support & Maintenance', 'Reliable support and updates to keep your systems running smoothly.', 'Monthly plans', 'database');
   insertService.run('s7', 'Graphic Design & Branding', 'Logos, marketing materials, and complete brand identity.', 'From LKR 15,000', 'palette');
-
-  // Seed Reviews
-  const insertReview = db.prepare('INSERT INTO reviews (id, name, role, service, rating, text) VALUES (?, ?, ?, ?, ?, ?)');
-  insertReview.run('r1', 'Kasun Perera', 'Owner, ABC Traders', 'Web development', 5, 'They delivered exactly what we needed. Communication was clear from day one.');
 }
 
 // Seed Stats if empty
