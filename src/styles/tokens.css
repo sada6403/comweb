@@ -1,0 +1,90 @@
+/* =========================================================================
+   Design tokens — CSPLUS-inspired corporate system.
+   Deep navy + cyan accent, alternating dark/light, gradient pill buttons.
+   ========================================================================= */
+:root {
+  /* ---- Color: dark (navy) ---- */
+  --navy: #0a1a2f;
+  --navy-2: #0e2740;
+  --navy-3: #13314f;
+  --overlay: rgba(8, 20, 36, 0.74);
+  --overlay-soft: rgba(8, 20, 36, 0.55);
+
+  /* ---- Color: light neutrals ---- */
+  --bg: #ffffff;
+  --bg-subtle: #f2f7fb;
+  --bg-sunken: #e7eef5;
+  --surface: #ffffff;
+  --border: #e2e9f1;
+  --border-strong: #cfdae6;
+
+  /* ---- Color: text ---- */
+  --text: #0b1b2b;
+  --text-secondary: #4a5b6e;
+  --text-muted: #8595a6;
+  --text-invert: #eaf2f8;
+  --text-invert-soft: #adc0d3;
+
+  /* ---- Color: accent (cyan/teal) ---- */
+  --accent: #1aa6cf;
+  --accent-strong: #1483b3;
+  --accent-soft: #e4f4fa;
+  --accent-ring: rgba(26, 166, 207, 0.3);
+  --accent-grad: linear-gradient(135deg, #22b2d8, #1a76b0);
+  --on-accent: #ffffff;
+
+  /* ---- Color: utility ---- */
+  --line: #e8645a;            /* thin coral frame accent */
+  --whatsapp: #1ebe5d;
+  --whatsapp-strong: #149c4b;
+  --danger: #d6453f;
+  --star: #f5a623;
+
+  /* ---- Typography ---- */
+  --font-sans: "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --fs-eyebrow: 0.78rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.375rem;
+  --fs-2xl: 1.875rem;
+  --fs-3xl: 2.5rem;
+  --fs-4xl: clamp(2.6rem, 6vw, 4.5rem);
+
+  /* ---- Spacing (8px base) ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  /* ---- Radius ---- */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --radius-full: 999px;
+
+  /* ---- Elevation ---- */
+  --shadow-sm: 0 1px 2px rgba(11, 27, 43, 0.06), 0 1px 3px rgba(11, 27, 43, 0.05);
+  --shadow-md: 0 6px 18px -4px rgba(11, 27, 43, 0.12), 0 2px 6px -2px rgba(11, 27, 43, 0.07);
+  --shadow-lg: 0 24px 50px -16px rgba(10, 26, 47, 0.28), 0 10px 20px -10px rgba(10, 26, 47, 0.14);
+  --shadow-accent: 0 14px 30px -10px rgba(26, 166, 207, 0.5);
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 0.16s;
+  --dur: 0.28s;
+  --dur-slow: 0.6s;
+
+  /* ---- Layout ---- */
+  --container: 1180px;
+  --container-narrow: 760px;
+  --nav-h: 76px;
+}

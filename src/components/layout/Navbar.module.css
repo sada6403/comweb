@@ -1,0 +1,96 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  color: var(--text-invert);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.nav.solid {
+  background: color-mix(in srgb, var(--navy) 92%, transparent);
+  backdrop-filter: saturate(160%) blur(10px);
+  -webkit-backdrop-filter: saturate(160%) blur(10px);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-md);
+}
+
+.inner {
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.links { display: flex; align-items: center; gap: var(--space-1); }
+
+.link {
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.link:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+.link.active { color: #fff; }
+.link.active::after {
+  content: "";
+  display: block;
+  height: 2px;
+  margin-top: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.actions { display: flex; align-items: center; gap: var(--space-3); }
+
+.menuBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  color: #fff;
+}
+
+.mobile {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) 0 var(--space-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--navy);
+}
+.mobileLink {
+  padding: 0.85rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+.mobileLink.active { color: #fff; background: rgba(255, 255, 255, 0.08); }
+
+@media (max-width: 860px) {
+  .links, .actions .desktopCta { display: none; }
+  .menuBtn { display: inline-flex; }
+  .mobile.open { display: flex; }
+}

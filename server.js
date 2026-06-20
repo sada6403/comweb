@@ -63,10 +63,10 @@ db.exec(`
 `);
 
 // Safely add social columns if they don't exist yet (for existing SQLite DBs)
-try { db.exec('ALTER TABLE company ADD COLUMN facebook TEXT'); } catch {}
-try { db.exec('ALTER TABLE company ADD COLUMN instagram TEXT'); } catch {}
-try { db.exec('ALTER TABLE company ADD COLUMN linkedin TEXT'); } catch {}
-try { db.exec('ALTER TABLE company ADD COLUMN logo_url TEXT'); } catch {}
+try { db.exec('ALTER TABLE company ADD COLUMN facebook TEXT'); } catch { /* column already exists */ }
+try { db.exec('ALTER TABLE company ADD COLUMN instagram TEXT'); } catch { /* column already exists */ }
+try { db.exec('ALTER TABLE company ADD COLUMN linkedin TEXT'); } catch { /* column already exists */ }
+try { db.exec('ALTER TABLE company ADD COLUMN logo_url TEXT'); } catch { /* column already exists */ }
 
 // Check if company is seeded
 const companyCount = db.prepare('SELECT COUNT(*) as count FROM company').get().count;
@@ -77,19 +77,15 @@ if (companyCount === 0) {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   insertCompany.run(
-    'c1',
-    'YourCompany',
+    1,
+    'NF Software Solutions',
     'Software, built around how your business actually runs.',
-    'We are a small team of developers and designers based in Sri Lanka, building websites, apps, and internal tools for businesses that are tired of off-the-shelf software that almost fits.',
-    'hello@yourcompany.lk',
-    'Colombo, Sri Lanka',
-    '94770000000',
-    '', '', '', ''
+    'NF Software Solutions is a team of developers and designers building websites, apps, and internal tools for businesses that are tired of off-the-shelf software that almost fits. Clear scope, direct communication, and code that\'s built to last.',
+    'info@nfplantation.com',
+    'No: 150, Housing Scheme, Kannakipuram West, Kannakipuram, Kilinochchi.',
+    '94244335099',
+    '', '', '', '/images/logo.jpg'
   );
-
-  // Seed Reviews
-  const insertReview = db.prepare('INSERT INTO reviews (id, name, role, service, rating, text) VALUES (?, ?, ?, ?, ?, ?)');
-  insertReview.run('r1', 'Kasun Perera', 'Owner, ABC Traders', 'Web development', 5, 'They delivered exactly what we needed. Communication was clear from day one.');
 }
 
 // Seed Services comprehensively if user only has 1 or 0 services
@@ -122,6 +118,18 @@ if (featuresCount === 0) {
   insertFeature.run('f1', 'Direct communication — talk to the people actually building your project.');
   insertFeature.run('f2', 'Fixed-scope quotes before any work starts, no surprise costs.');
   insertFeature.run('f3', 'Built with modern, maintainable tech: React, PHP/Laravel, and Node.js.');
+}
+
+// Seed Reviews if empty
+const reviewsCount = db.prepare('SELECT COUNT(*) as count FROM reviews').get().count;
+if (reviewsCount === 0) {
+  const insertReview = db.prepare('INSERT INTO reviews (id, name, role, service, rating, text) VALUES (?, ?, ?, ?, ?, ?)');
+  insertReview.run('r1', 'Kasun Perera', 'Owner, Perera Hardware', 'Web Development', 5, 'They built our business site in under two weeks and it actually loads fast on mobile, unlike our old one. Communication on WhatsApp made the whole process easy to follow.');
+  insertReview.run('r2', 'Nadeesha Fernando', 'Founder, Thaaragai Boutique', 'Graphic Design & Branding', 5, 'Our posters finally look consistent and professional. They understood our brand colours immediately and turned around designs within a day each time.');
+  insertReview.run('r3', 'Ahamed Rizvi', 'Manager, Rizvi Auto Care', 'Custom Software & ERP', 4, 'The system they set up handles our daily billing without any issues. Took a little time to train staff, but support was responsive throughout.');
+  insertReview.run('r4', 'Dilani Wickramasinghe', 'Director, Wickrama Real Estate', 'UI / UX Design', 5, 'Got an interface that actually fits how our agents work, not a generic template. They explained their design choices clearly, which I appreciated.');
+  insertReview.run('r5', 'Tharindu Jayasuriya', 'Co-founder, Jaysu Mobile', 'Mobile App Development', 5, 'Built our delivery-tracking app exactly to spec, and were upfront about what was realistic within our budget instead of overpromising.');
+  insertReview.run('r6', 'Sherine de Silva', 'Marketing lead, Silva Boutique', 'Digital Marketing & SEO', 4, 'Engagement improved noticeably once they took over our content. Would happily work with them again.');
 }
 
 // Authentication Middleware
@@ -307,7 +315,7 @@ app.use((req, res) => {
 });
 
 const startServer = (port) => {
-  const server = app.listen(port, () => {
+  app.listen(port, () => {
     console.log(`Server is successfully running on port ${port}`);
   }).on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
