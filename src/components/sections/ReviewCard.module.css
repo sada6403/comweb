@@ -1,0 +1,44 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.quote {
+  color: var(--accent);
+  opacity: 0.32;
+  margin-bottom: var(--space-3);
+}
+
+.text {
+  color: var(--text);
+  font-size: var(--fs-base);
+  line-height: 1.65;
+  margin: var(--space-3) 0 var(--space-5);
+  flex: 1;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--accent-soft);
+}
+
+.name { font-weight: 600; font-size: var(--fs-sm); }
+.role { color: var(--text-muted); font-size: 0.8rem; }
+
+.service {
+  margin-top: var(--space-3);
+  align-self: flex-start;
+}
